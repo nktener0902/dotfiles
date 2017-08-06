@@ -29,9 +29,6 @@
 ;; カーソルの点滅をやめる
 (blink-cursor-mode 0)
 
-;; カーソル行をハイライトする
-(global-hl-line-mode t)
-
 ;; 対応する括弧を光らせる
 (show-paren-mode 1)
 

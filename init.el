@@ -74,10 +74,10 @@
 (package-initialize)
 
 ;; Eclim
-(require 'eclim)
-(setq eclimd-autostart t)
+;(require 'eclim)
+;(setq eclimd-autostart t)
 
-(defun my-java-mode-hook ()
-    (eclim-mode t))
+;(defun my-java-mode-hook ()
+;    (eclim-mode t))
 
-(add-hook 'java-mode-hook 'my-java-mode-hook)
+;(add-hook 'java-mode-hook 'my-java-mode-hook)

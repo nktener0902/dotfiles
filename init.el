@@ -62,25 +62,28 @@
     (ding)))
 (setq ring-bell-function 'my-bell-function)
 
-;; Markdownモード
-;; 最初に起動する時には、Emacs内で以下のコマンドを打つ
-;; M-x package-install RET
-;; markdown-mode RET
-;; そしてEmacsを再起動
-;; no matchとなったら、M-xpackage-refresh-contents
+;; Package
 (require 'package)
 (add-to-list 'package-archives
              '("melpa-stable" . "https://stable.melpa.org/packages/"))
 (package-initialize)
 
-;; Eclim
-;(require 'eclim)
-;(setq eclimd-autostart t)
+(require 'cl)
+(defvar installing-package-list
+  '(
+    ;; ここに使っているパッケージを書く。
+    markdown-mode
+    yaml-mode
+    ))
 
-;(defun my-java-mode-hook ()
-;    (eclim-mode t))
+(let ((not-installed (loop for x in installing-package-list
+                            when (not (package-installed-p x))
+                            collect x)))
+  (when not-installed
+    (package-refresh-contents)
+    (dolist (pkg not-installed)
+        (package-install pkg))))
 
-;(add-hook 'java-mode-hook 'my-java-mode-hook)
 
 ;;
 ;; YaTeX

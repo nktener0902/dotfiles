@@ -74,6 +74,7 @@
     ;; ここに使っているパッケージを書く。
     markdown-mode
     yaml-mode
+    yatex
     ))
 
 (let ((not-installed (loop for x in installing-package-list
@@ -105,9 +106,6 @@
 ;;
 ;; YaTeX
 ;;
-;; 最初に起動する時には、Emacs内で以下のコマンドを打つ
-;; M-x package-install RET
-;; yatex
 (add-to-list 'load-path "~/.emacs.d/site-lisp/yatex")
 (autoload 'yatex-mode "yatex" "Yet Another LaTeX mode" t)
 (setq auto-mode-alist

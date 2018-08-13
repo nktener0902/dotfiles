@@ -1,4 +1,4 @@
-wget https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh
+curl -LO https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh
 mv git-prompt.sh .git-prompt.sh
 mv .git-prompt.sh $HOME
 cat <<EOF >> $HOME/.bash_profile

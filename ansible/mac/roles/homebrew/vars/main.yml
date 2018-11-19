@@ -1,0 +1,40 @@
+homebrew_taps:
+    - { name: homebrew/cask }
+
+homebrew_packages:
+    - { name: zsh }
+    - { name: rmtrash }
+    - { name: openssl }
+    - { name: libxml2 }
+    - { name: mcrypt }
+    - { name: autoconf }
+    - { name: automake }
+    - { name: bison }
+    - { name: selenium-server-standalone }
+    - { name: docker-machine }
+    - { name: jq }
+    - { name: tree }
+    - { name: curl }
+    - { name: nkf }
+    - { name: peco }
+    - { name: zplug }
+    - { name: parallel }
+    - { name: wget }
+    - { name: awscli }
+    - { name: httpie }
+    - { name: nodebrew }
+
+homebrew_cask_packages:
+    - { name: chromedriver }
+    - { name: docker }
+    - { name: visual-studio-code }
+    - { name: pycharm }
+    - { name: shiftit }
+    - { name: iterm2 }
+    - { name: slack }
+    - { name: firefox }
+    - { name: google-chrome }
+    - { name: postman }
+    - { name: 1password }
+    - { name: intellij-idea-ce }
+    - { name: amazon-music }

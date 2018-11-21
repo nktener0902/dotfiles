@@ -1,0 +1,11 @@
+set nocompatible
+scriptencoding utf-8
+
+" NeoBundle {{{
+
+" 使用するプロトコルを変更する
+let g:neobundle_default_git_protocol='https'
+
+" }}}
+
+" vim:ft=vim:fdm=marker:fen:

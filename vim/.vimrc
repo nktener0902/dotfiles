@@ -15,6 +15,10 @@ set runtimepath+=~/.vim/bundle/neobundle.vim/
 " Required:
 call neobundle#begin(expand('~/.vim/bundle/'))
 
+if filereadable($HOME . '.vimrc.local')
+  source $HOME/.vimrc.local
+endif
+
 " Let NeoBundle manage NeoBundle
 " Required:
 NeoBundleFetch 'Shougo/neobundle.vim'

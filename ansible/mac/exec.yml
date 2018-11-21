@@ -2,3 +2,4 @@
   connection: local
   roles:
       - { role: homebrew, tags: [homebrew] }
+      - { role: npm, tags: [npm] }

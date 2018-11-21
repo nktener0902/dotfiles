@@ -28,7 +28,7 @@ homebrew_cask_packages:
     - { name: chromedriver }
     - { name: docker }
     - { name: visual-studio-code }
-    - { name: pycharm }
+    - { name: pycharm-ce }
     - { name: shiftit }
     - { name: iterm2 }
     - { name: slack }

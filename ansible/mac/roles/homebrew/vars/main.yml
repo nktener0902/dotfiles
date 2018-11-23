@@ -38,3 +38,4 @@ homebrew_cask_packages:
     - { name: 1password }
     - { name: intellij-idea-ce }
     - { name: amazon-music }
+    - { name: kindle }

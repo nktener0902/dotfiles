@@ -1,0 +1,12 @@
+---
+- hosts: localhost
+  connection: local
+
+# MacOS
+- import_playbook: "Darwin.yml"
+  when:  ansible_os_family  == "Darwin"
+# Ubuntu
+- import_playbook: "ubuntu16.yml"
+  when:
+   - ansible_distribution == "Ubuntu"
+   - ansible_distribution_major_version == "16"

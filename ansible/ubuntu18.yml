@@ -1,6 +1,6 @@
 - hosts: localhost
   connection: local
   roles:
-      - { role: apt, tags: [apt] }
+      - { role: apt18, tags: [apt] }
       - { role: npm, tags: [npm] }
       - { role: docker, tags: [docker] }

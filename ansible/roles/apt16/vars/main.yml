@@ -1,0 +1,21 @@
+apt_packages:
+    - { name: curl }
+    - { name: nodejs }
+    - { name: default-jdk }
+    - { name: maven }
+    - { name: gradle }
+    - { name: trash-cli }
+    - { name: openssl }
+    - { name: libxml2 }
+    - { name: mcrypt }
+    - { name: autoconf }
+    - { name: automake }
+    - { name: bison }
+    - { name: jq }
+    - { name: tree }
+    - { name: nkf }
+    - { name: zsh }
+    - { name: wget }
+    - { name: awscli }
+    - { name: httpie }
+    - { name: texlive-lang-cjk }

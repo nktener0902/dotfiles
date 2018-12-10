@@ -1,0 +1,22 @@
+- name: Install nodejs and npm
+  become: true
+  apt:
+      name: ['nodejs', 'npm']
+      state: present
+      update_cache: yes
+- name: npm cache clean
+  become: true
+  shell: npm cache clean
+- name: Install n package
+  become: true
+  npm:
+      name: n
+      global: yes
+- name: Install stable nodejs and npm
+  become: true
+  shell: n stable && ln -sf /usr/local/bin/node /usr/bin/node
+- name: Delete out of date nodejs and npm
+  become: true
+  apt:
+      name: ['nodejs', 'npm']
+      state: absent

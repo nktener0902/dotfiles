@@ -22,3 +22,9 @@ echo "export HOMEBREW_CASK_OPTS='--appdir=/Applications'" >> ~/.bash_profile
 source ~/.bash_profile
 ansible-playbook -i hosts site.yml
 ```
+
+If password is required to execut sudo command, type following command instead of the last one of above commands.
+
+```bash
+ansible-playbook -i hosts site.yml --ask-become-pass
+```

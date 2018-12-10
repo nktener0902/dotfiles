@@ -1,0 +1,24 @@
+- name: Set ls command to be colorful
+  blockinfile:
+      path: $HOME/.bash_profile
+      create: yes
+      block: |
+              alias ls='ls --color=always'
+              alias ll='ls -lG'
+              alias la='ls -laG'
+      marker: ""
+- name: Set environmental variables to show branch name on bash
+  blockinfile:
+      path: $HOME/.bash_profile
+      create: yes
+      block: |
+              if [ -f /etc/bash_completion ]; then
+              . /etc/bash_completion
+              fi
+              if [ -f /etc/bash_completion.d/git-prompt ]; then
+              export PS1='\[\033[01;32m\]\u@\h\[\033[01;33m\] \w$(__git_ps1) \n\[\033[01;34m\]\$\[\033[00m\] '
+              else
+              export PS1='\[\033[01;32m\]\u@\h\[\033[01;33m\] \w \n\[\033[01;34m\]\$\[\033[00m\] '
+              fi
+      marker: ""
+

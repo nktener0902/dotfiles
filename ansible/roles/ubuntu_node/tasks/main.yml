@@ -4,9 +4,6 @@
       name: ['nodejs', 'npm']
       state: present
       update_cache: yes
-- name: npm cache clean
-  become: true
-  shell: npm cache clean
 - name: Install n package
   become: true
   npm:

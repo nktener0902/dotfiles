@@ -4,3 +4,4 @@ npm_global:
     - { name: eslint-plugin-react}
     - { name: api-designer }
     - { name: request }
+    - { name: yarn }

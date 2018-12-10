@@ -2,3 +2,5 @@ npm_global:
     - { name: pm2 }
     - { name: eslint}
     - { name: eslint-plugin-react}
+    - { name: api-designer }
+    - { name: request }

@@ -9,12 +9,14 @@ If you are using MacOS, type following commands.
 brew install ansible
 ```
 
-If you are using other OS, refer [Ansible Installation Guide](https://docs.ansible.com/ansible/2.7/installation_guide/intro_installation.html#latest-releases-via-apt-ubuntu).
+If you are using another OS, refer to [Ansible Installation Guide](https://docs.ansible.com/ansible/2.7/installation_guide/intro_installation.html#latest-releases-via-apt-ubuntu).
 
 # Execute ansible playbook
 
-Before do this, you have to check what packages will be installed by this ansible playbook.
+Before executing this ansible playbook, you have to check what packages will be installed.
 For example, homebrew packages installed in MacOS are listed up in `./roles/homebrew/vars/main.yml`.
+
+After checking them, type following commands to configure your machine.
 
 ```bash
 # If you are using MacOS, set HOMEBREW_CASK_OPTS environment variable.

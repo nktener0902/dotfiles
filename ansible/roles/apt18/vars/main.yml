@@ -1,4 +1,5 @@
 apt_packages:
+    - { name: vim }
     - { name: curl }
     - { name: nodejs }
     - { name: default-jdk }

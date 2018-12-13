@@ -2,6 +2,8 @@
   connection: local
   roles:
       - { role: apt16, tags: [apt] }
+      - { role: java_env, tags: [java] }
       - { role: ubuntu_node, tags: [node] }
       - { role: npm, tags: [npm] }
       - { role: docker, tags: [docker] }
+      - { role: bash_env, tags: [bash] }

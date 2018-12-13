@@ -1,6 +1,6 @@
 # Install ansible
 
-If you are using MacOS, input following commands.
+If you are using MacOS, type following commands.
 
 ```bash
 # Install Homebrew
@@ -14,7 +14,7 @@ If you are using other OS, refer [Ansible Installation Guide](https://docs.ansib
 # Execute ansible playbook
 
 Before do this, you have to check what packages will be installed by this ansible playbook.
-For example, homebrew packages that are installed in MacOS are listed up on `./roles/homebrew/vars/main.yml`.
+For example, homebrew packages installed in MacOS are listed up in `./roles/homebrew/vars/main.yml`.
 
 ```bash
 # If you are using MacOS, set HOMEBREW_CASK_OPTS environment variable.
@@ -23,7 +23,7 @@ source ~/.bash_profile
 ansible-playbook -i hosts site.yml
 ```
 
-If password is required to execut sudo command, type following command instead of the last one of above commands.
+If password is required to become super user, type following command instead of the last one of above commands.
 
 ```bash
 ansible-playbook -i hosts site.yml --ask-become-pass

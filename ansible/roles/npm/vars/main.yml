@@ -6,3 +6,4 @@ npm_global:
     - { name: request }
     - { name: node-red }
     - { name: node-red-admin }
+    - { name: yarn }

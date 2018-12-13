@@ -2,4 +2,5 @@
   connection: local
   roles:
       - { role: homebrew, tags: [homebrew] }
+      - { role: java_env, tags: [java] }
       - { role: npm, tags: [npm] }

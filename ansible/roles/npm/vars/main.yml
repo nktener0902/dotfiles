@@ -4,3 +4,5 @@ npm_global:
     - { name: eslint-plugin-react}
     - { name: api-designer }
     - { name: request }
+    - { name: node-red }
+    - { name: node-red-admin }

@@ -24,6 +24,9 @@ homebrew_packages:
     - { name: awscli }
     - { name: httpie }
     - { name: nodebrew }
+    - { name: gradle }
+    - { name: maven }
+
 
 homebrew_cask_packages:
     - { name: chromedriver }
@@ -40,3 +43,4 @@ homebrew_cask_packages:
     - { name: intellij-idea-ce }
     - { name: amazon-music }
     - { name: kindle }
+    - { name: java }

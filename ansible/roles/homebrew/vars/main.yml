@@ -26,7 +26,7 @@ homebrew_packages:
     - { name: nodebrew }
     - { name: gradle }
     - { name: maven }
-
+    - { name: scala }
 
 homebrew_cask_packages:
     - { name: chromedriver }

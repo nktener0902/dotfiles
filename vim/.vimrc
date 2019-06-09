@@ -54,6 +54,7 @@ set number
 set cursorline
 set virtualedit=onemore
 set smartindent
+set cindent
 set visualbell
 set showmatch
 set laststatus=2
@@ -65,6 +66,7 @@ nnoremap k gk
 colorscheme lucius
 syntax on
 set t_Co=256
+" If your env is not 24bit color terminal, disable following setting
 set termguicolors
 set background=dark
 
@@ -81,6 +83,8 @@ set incsearch
 set wrapscan
 set hlsearch
 nmap <Esc><Esc> :nohlsearch<CR><Esc>
+
+let g:ansible_options = {'ignore_blank_lines': 0}
 
 " Indent width
 if has("autocmd")

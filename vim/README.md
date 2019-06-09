@@ -12,6 +12,8 @@ curl https://raw.githubusercontent.com/Shougo/neobundle.vim/master/bin/install.s
 sh ./install.sh
 # 2. Copy .vimrc and .vim to $HOME
 cp .vim* $HOME
+# 3. Copy filetype.vim to $HOME/.vim
+cp filetype.vim $HOME/.vim
 # 3. Start vim
 vim
 ```

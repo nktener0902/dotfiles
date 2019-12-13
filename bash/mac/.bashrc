@@ -5,6 +5,7 @@
 alias ls='ls -G'
 alias ll='ls -lG'
 alias la='ls -laG'
+alias ls='ls -F --color=auto'
 
 # git
 source /usr/local/etc/bash_completion.d/git-prompt.sh

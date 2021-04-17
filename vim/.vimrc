@@ -31,6 +31,12 @@ NeoBundle 'jonathanfilip/vim-lucius'
 " Yaml indent
 NeoBundle 'chase/vim-ansible-yaml'
 
+" Rust
+NeoBundle 'rust-lang/rust.vim'
+
+" Markdown
+"NeoBundle 'plasticboy/vim-markdown'
+
 call neobundle#end()
 
 " Required:

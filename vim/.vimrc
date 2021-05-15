@@ -27,6 +27,7 @@ NeoBundleFetch 'Shougo/neobundle.vim'
 " Refer to |:NeoBundle-examples|.
 " Note: You don't set neobundle setting in .gvimrc!
 NeoBundle 'jonathanfilip/vim-lucius'
+NeoBundle 'qpkorr/vim-bufkill'
 
 " Yaml indent
 NeoBundle 'chase/vim-ansible-yaml'
@@ -36,6 +37,9 @@ NeoBundle 'rust-lang/rust.vim'
 
 " Markdown
 "NeoBundle 'plasticboy/vim-markdown'
+
+" Python
+NeoBundle 'Vimjas/vim-python-pep8-indent'
 
 call neobundle#end()
 
@@ -54,6 +58,19 @@ set noswapfile
 set autoread
 set hidden
 set showcmd
+
+" バッファ
+nnoremap <C-c> :BD<CR>
+
+" Overriding theme settings
+" 行末の空白を表示する
+set list
+set listchars=trail:·
+highlight ExtraWhitespace ctermfg=darkgreen guifg=darkgreen
+" 半角，タブ
+" match ExtraWhitespace /\s\+$/
+" 半角スペースのみ
+match ExtraWhitespace / \+$/
 
 " Style
 set number

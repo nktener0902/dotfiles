@@ -21,7 +21,8 @@ export NODEBREW_ROOT=$HOME/.nodebrew
 
 # Python
 ## pyenv
-export PATH="/Users/yu.nakata/.pyenv/bin:$PATH"
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
 
@@ -33,7 +34,7 @@ alias watch='watch '
 export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 
 # Created by `pipx` on 2021-05-11 08:52:20
-export PATH="$PATH:/Users/yu.nakata/.local/bin"
+export PATH="$PATH:$HOME/.local/bin"
 
 # pipx
 eval "$(register-python-argcomplete pipx)"

@@ -27,9 +27,19 @@ NeoBundleFetch 'Shougo/neobundle.vim'
 " Refer to |:NeoBundle-examples|.
 " Note: You don't set neobundle setting in .gvimrc!
 NeoBundle 'jonathanfilip/vim-lucius'
+NeoBundle 'qpkorr/vim-bufkill'
 
 " Yaml indent
 NeoBundle 'chase/vim-ansible-yaml'
+
+" Rust
+NeoBundle 'rust-lang/rust.vim'
+
+" Markdown
+"NeoBundle 'plasticboy/vim-markdown'
+
+" Python
+" NeoBundle 'Vimjas/vim-python-pep8-indent'
 
 call neobundle#end()
 
@@ -49,6 +59,9 @@ set autoread
 set hidden
 set showcmd
 
+" バッファ
+nnoremap <C-c> :BD<CR>
+
 " Style
 set number
 set cursorline
@@ -66,6 +79,14 @@ if has('vim_starting')
     let &t_EI .= "\e[2 q"
     let &t_SR .= "\e[4 q"
 endif
+" 行末の空白を表示する
+set list
+set listchars=trail:·
+highlight ExtraWhitespace ctermfg=darkgreen guifg=darkgreen
+" 半角，タブ
+" match ExtraWhitespace /\s\+$/
+" 半角スペースのみ
+match ExtraWhitespace / \+$/
 
 " Color theme
 colorscheme lucius
@@ -74,6 +95,24 @@ set t_Co=256
 " If your env is not 24bit color terminal, disable following setting
 set termguicolors
 set background=dark
+let g:terminal_ansi_colors = [
+\ '#073642',
+\ '#dc322f',
+\ '#859900',
+\ '#b58900',
+\ '#268bd2',
+\ '#d33682',
+\ '#2aa198',
+\ '#eee8d5',
+\ '#002b36',
+\ '#cb4b16',
+\ '#586e75',
+\ '#657b83',
+\ '#839496',
+\ '#6c71c4',
+\ '#93a1a1',
+\ '#fdf6e3',
+\ ]
 
 " Tab
 set list listchars=tab:\▸\-

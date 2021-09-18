@@ -18,3 +18,27 @@ export PS1='\[\e[34m\]\w \[\033[31m\]$(__git_ps1 [%s])\[\033[00m\]\$ '
 export HOMEBREW_CASK_OPTS='--appdir=/Applications'
 export PATH=$HOME/.nodebrew/current/bin:$PATH
 export NODEBREW_ROOT=$HOME/.nodebrew
+
+# Python
+## pyenv
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
+
+# Kubernetes
+## aliases
+alias kc='kubectl'
+alias watch='watch '
+## krew
+export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+
+# Created by `pipx` on 2021-05-11 08:52:20
+export PATH="$PATH:$HOME/.local/bin"
+
+# pipx
+eval "$(register-python-argcomplete pipx)"
+. "$HOME/.cargo/env"
+
+# AWS
+complete -C '/usr/local/bin/aws_completer' aws

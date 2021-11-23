@@ -87,6 +87,8 @@ highlight ExtraWhitespace ctermfg=darkgreen guifg=darkgreen
 " match ExtraWhitespace /\s\+$/
 " 半角スペースのみ
 match ExtraWhitespace / \+$/
+" 保存時に行末の空白を削除
+autocmd BufWritePre * :%s/\s\+$//ge
 
 " Color theme
 colorscheme lucius

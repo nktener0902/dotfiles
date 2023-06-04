@@ -1,0 +1,7 @@
+# Use Vi, not Emacs, style editing
+set editing-mode vi
+
+# for vi mode
+set show-mode-in-prompt on
+set vi-ins-mode-string \1\e[34;1m\2(ins) \1\e[0m\2
+set vi-cmd-mode-string \1\e[31;1m\2(cmd) \1\e[0m\2

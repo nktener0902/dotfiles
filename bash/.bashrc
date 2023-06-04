@@ -32,7 +32,7 @@ GIT_PS1_SHOWDIRTYSTATE=1
 GIT_PS1_SHOWUPSTREAM=1
 GIT_PS1_SHOWUNTRACKEDFILES=1
 GIT_PS1_SHOWSTASHSTATE=1
-export PS1='[\t]\[\e[34m\]\w \[\033[31m\]$(__git_ps1 [%s])\[\033[00m\]\n\$ '
+export PS1='\[\033[00m\][\t] \[\e[34m\]\w \[\033[31m\]$(__git_ps1 [%s])\[\033[00m\]\n\$ '
 export HOMEBREW_CASK_OPTS='--appdir=/Applications'
 export PATH=$HOME/.nodebrew/current/bin:$PATH
 export NODEBREW_ROOT=$HOME/.nodebrew

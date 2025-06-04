@@ -33,10 +33,9 @@ function custom_prompt_command() {
         venv="($(basename "$VIRTUAL_ENV")) "
     fi
 
-    __git_ps1 "\[\033[32m\]$venv\u@\h \[\033[33m\]\w" "\[\033[0m\]\n\$ " " \[\033[31m\][%s]\[\033[0m\]"
+    # venvは色指定の外に置く
+    __git_ps1 "$venv\[\033[32m\]\u@\h \[\033[33m\]\w" "\[\033[0m\]\n\$ " " \[\033[31m\][%s]\[\033[0m\]"
 }
-
-
 PROMPT_COMMAND=custom_prompt_command
 unset PS1  # __git_ps1 が PS1 を自動設定するので不要
 
@@ -84,4 +83,7 @@ function peco_search_history() {
   READLINE_POINT=${#l}
 }
 bind -x '"\C-r": peco_search_history'
+
+## [Neovim alias]
+alias vim="nvim"
 

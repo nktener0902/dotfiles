@@ -1,3 +1,5 @@
+# .bash_profile
+
 ## [Alias]
 alias ls='ls -G'
 alias ll='ls -lG'
@@ -21,12 +23,20 @@ export GIT_PS1_SHOWUNTRACKEDFILES=true
 export GIT_PS1_SHOWSTASHSTATE=true
 export GIT_PS1_SHOWUPSTREAM=auto
 
-## [Prompt 統合]
+## [ターミナル表示]
 function custom_prompt_command() {
     _direnv_hook
     share_history
-    __git_ps1 "\[\033[32m\]\u@\h \[\033[33m\]\w" "\[\033[0m\]\n\$ " " [%s]"
+
+    local venv=""
+    if [[ -n "$VIRTUAL_ENV" ]]; then
+        venv="($(basename "$VIRTUAL_ENV")) "
+    fi
+
+    __git_ps1 "\[\033[32m\]$venv\u@\h \[\033[33m\]\w" "\[\033[0m\]\n\$ " " \[\033[31m\][%s]\[\033[0m\]"
 }
+
+
 PROMPT_COMMAND=custom_prompt_command
 unset PS1  # __git_ps1 が PS1 を自動設定するので不要
 

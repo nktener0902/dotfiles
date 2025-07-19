@@ -28,6 +28,10 @@ set noswapfile
 set autoread
 set hidden
 set showcmd
+" ヤンクコピー
+vnoremap <leader>y "+y
+nnoremap <leader>y "+y
+set clipboard=unnamedplus
 
 " バッファ操作
 nnoremap <C-c> :BD<CR>

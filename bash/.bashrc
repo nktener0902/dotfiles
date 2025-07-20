@@ -5,6 +5,9 @@ alias ls='ls -G'
 alias ll='ls -lG'
 alias la='ls -laG'
 alias ls='ls -F --color=auto'
+# LSCOLORSのカスタム設定（例：より見やすいディレクトリ色）
+export CLICOLOR=1
+export LSCOLORS=ExFxBxDxCxegedabagacad
 
 ## [history] 全ターミナル間で履歴共有
 function share_history {

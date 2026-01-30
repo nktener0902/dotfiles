@@ -10,31 +10,35 @@ fi
 autoload -Uz compinit
 compinit -u
 
-# 直前コマンドの開始時刻（Enter 時）
-typeset -g __last_cmd_started_at=""
 
-function __capture_cmd_start_time() {
-  # zsh 内部処理やプロンプト再描画では記録しない
-  case "$ZSH_EVAL_CONTEXT" in
-    *prompt*|*completion*|*trap*)
-      return
-      ;;
-  esac
+# 直前コマンドの開始・終了時刻（安定版: add-zsh-hook）
+autoload -Uz add-zsh-hook
 
-  __last_cmd_started_at="$(date '+%Y-%m-%d %H:%M:%S')"
+typeset -g __ts_cmd_started_at=""
+typeset -g __ts_cmd_running=0
+
+__ts_preexec() {
+  __ts_cmd_running=1
+  __ts_cmd_started_at="$(date '+%Y-%m-%d %H:%M:%S')"
 }
 
-# ユーザーコマンド実行直前に発火
-trap '__capture_cmd_start_time' DEBUG
-# 次のプロンプト表示直前に、直前コマンドの開始時刻を1行だけ出す（reset-promptの再描画では出ない）
-function __ts_precmd() {
-  if [[ -n "$__last_cmd_started_at" ]]; then
-    print -r -- "[$__last_cmd_started_at]"
-    __last_cmd_started_at=""
+__ts_precmd() {
+  # reset-prompt 等の再描画では出さない
+  (( __ts_cmd_running )) || return 0
+
+  local ended_at="$(date '+%Y-%m-%d %H:%M:%S')"
+  if [[ -n "${__ts_cmd_started_at}" ]]; then
+    print -r -- "[${__ts_cmd_started_at} -> ${ended_at}]"
+  else
+    print -r -- "[${ended_at}]"
   fi
+
+  __ts_cmd_running=0
+  __ts_cmd_started_at=""
 }
-precmd_functions=(${precmd_functions:#__ts_precmd})
-precmd_functions+=(__ts_precmd)
+
+add-zsh-hook preexec __ts_preexec
+add-zsh-hook precmd  __ts_precmd
 
 
 # 時計（秒ごと再描画）

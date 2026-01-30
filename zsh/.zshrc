@@ -1,0 +1,265 @@
+## lang
+export LANG=ja_JP.UTF-8
+
+# zsh-completions
+if [ -e /usr/local/share/zsh-completions ]; then
+  fpath=(/usr/local/share/zsh-completions $fpath)
+fi
+
+
+autoload -Uz compinit
+compinit -u
+
+# 直前コマンドの開始時刻（Enter 時）
+typeset -g __last_cmd_started_at=""
+
+function __capture_cmd_start_time() {
+  # zsh 内部処理やプロンプト再描画では記録しない
+  case "$ZSH_EVAL_CONTEXT" in
+    *prompt*|*completion*|*trap*)
+      return
+      ;;
+  esac
+
+  __last_cmd_started_at="$(date '+%Y-%m-%d %H:%M:%S')"
+}
+
+# ユーザーコマンド実行直前に発火
+trap '__capture_cmd_start_time' DEBUG
+# 次のプロンプト表示直前に、直前コマンドの開始時刻を1行だけ出す（reset-promptの再描画では出ない）
+function __ts_precmd() {
+  if [[ -n "$__last_cmd_started_at" ]]; then
+    print -r -- "[$__last_cmd_started_at]"
+    __last_cmd_started_at=""
+  fi
+}
+precmd_functions=(${precmd_functions:#__ts_precmd})
+precmd_functions+=(__ts_precmd)
+
+
+# 時計（秒ごと再描画）
+typeset -g __clock_enabled=1
+
+# NOTE: multi-line prompt の場合、RPROMPT は最終行（$ の行）に付く。
+# 1行目の末尾に時刻を出したいので、RPROMPT は使わず PS1 側で右寄せする。
+RPROMPT=''
+
+TMOUT=2  # まず 2 秒に落として安定化
+
+TRAPALRM() {
+  (( __clock_enabled )) || return 0
+  [[ -o zle ]] || return 0
+
+  # 補完UI実行中は更新しない（壊れやすい）
+  case "$WIDGET" in
+    complete-word|expand-or-complete|menu-complete|menu-select|reverse-menu-complete|list-choices|complete-word*|expand-or-complete* )
+      return 0
+      ;;
+  esac
+
+  zle reset-prompt
+}
+# 1行目末尾に表示する時計（右寄せ）
+typeset -g __ts_clock_format='%F{yellow}%D{%H:%M:%S}%f'
+
+function __ts_first_prompt_line() {
+  local git_raw left_raw time_raw
+
+  # __git_ps1 の出力に含まれる % を zsh の prompt escape として解釈させない
+  git_raw=$(__git_ps1 '(%s)')
+  git_raw=${git_raw%\%}
+
+  left_raw="%F{green}%n@%m%f: %F{cyan}%~%f %F{red}${git_raw}%f"
+  time_raw="$__ts_clock_format"
+
+  # 表示幅計算用に一度展開して ANSI を除去
+  local left_expanded time_expanded
+  left_expanded=$(print -P -- "$left_raw")
+  time_expanded=$(print -P -- "$time_raw")
+
+  local esc=$'\e'
+  local left_plain=${left_expanded//$esc\[[0-9\;]##m/}
+  local time_plain=${time_expanded//$esc\[[0-9\;]##m/}
+
+  local left_len=${#left_plain}
+  local time_len=${#time_plain}
+
+  local pad=$(( COLUMNS - left_len - time_len ))
+  (( pad < 1 )) && pad=1
+
+  # ここは「未展開の prompt escape」を返す（zsh が後で展開する）
+  print -r -- "${left_raw}${(l:${pad}:: :)}${time_raw}"
+}
+
+# peco
+# 過去に実行したコマンドを選択。ctrl-rにバインド
+function peco-select-history() {
+  local _saved_tmout=$TMOUT
+  local _saved_clock=$__clock_enabled
+
+  __clock_enabled=0
+  TMOUT=0
+
+  {
+    BUFFER=$(\history -n -r 1 | peco --query "$LBUFFER")
+    CURSOR=$#BUFFER
+  } always {
+    TMOUT=$_saved_tmout
+    __clock_enabled=$_saved_clock
+    zle reset-prompt
+  }
+}
+zle -N peco-select-history
+bindkey '^r' peco-select-history
+
+# Ctrl-D を「入力があるときだけ delete-char」にする
+function ctrl-d-safe() {
+  if [[ -n $BUFFER ]]; then
+    zle delete-char
+  else
+    # 何もしない（EOF を送らない）
+    zle -M "Ctrl-D ignored (empty line)"
+  fi
+}
+zle -N ctrl-d-safe
+bindkey '^D' ctrl-d-safe
+setopt IGNORE_EOF
+
+# search a destination from cdr list
+function peco-get-destination-from-cdr() {
+  cdr -l | \
+  sed -e 's/^[[:digit:]]*[[:blank:]]*//' | \
+  peco --query "$LBUFFER"
+}
+
+### 過去に移動したことのあるディレクトリを選択。ctrl-uにバインド
+function peco-cdr() {
+  local _saved_tmout=$TMOUT
+  local _saved_clock=$__clock_enabled
+
+  __clock_enabled=0
+  TMOUT=0
+
+  {
+    local destination="$(peco-get-destination-from-cdr)"
+    if [ -n "$destination" ]; then
+      BUFFER="cd $destination"
+      zle accept-line
+    else
+      zle reset-prompt
+    fi
+  } always {
+    TMOUT=$_saved_tmout
+    __clock_enabled=$_saved_clock
+    zle reset-prompt
+  }
+}
+zle -N peco-cdr
+bindkey '^u' peco-cdr
+
+# ブランチを簡単切り替え。git checkout lbで実行できる
+alias -g lb='`git branch | peco --prompt "GIT BRANCH>" | head -n 1 | sed -e "s/^\*\s*//g"`'
+
+# dockerコンテナに入る。deで実行できる
+alias de='docker exec -it $(docker ps | peco | cut -d " " -f 1) /bin/bash'
+
+# pyenv
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init -)"
+
+### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
+export PATH="/Users/yu.nakata/.rd/bin:$PATH"
+### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
+
+### Added by Zinit's installer
+if [[ ! -f $HOME/.local/share/zinit/zinit.git/zinit.zsh ]]; then
+    print -P "%F{33} %F{220}Installing %F{33}ZDHARMA-CONTINUUM%F{220} Initiative Plugin Manager (%F{33}zdharma-continuum/zinit%F{220})…%f"
+    command mkdir -p "$HOME/.local/share/zinit" && command chmod g-rwX "$HOME/.local/share/zinit"
+    command git clone https://github.com/zdharma-continuum/zinit "$HOME/.local/share/zinit/zinit.git" && \
+        print -P "%F{33} %F{34}Installation successful.%f%b" || \
+        print -P "%F{160} The clone has failed.%f%b"
+fi
+
+source "$HOME/.local/share/zinit/zinit.git/zinit.zsh"
+autoload -Uz _zinit
+(( ${+_comps} )) && _comps[zinit]=_zinit
+
+# Load a few important annexes, without Turbo
+zinit light-mode for \
+    zdharma-continuum/zinit-annex-as-monitor \
+    zdharma-continuum/zinit-annex-bin-gem-node \
+    zdharma-continuum/zinit-annex-patch-dl \
+    zdharma-continuum/zinit-annex-rust
+### End of Zinit's installer chunk
+
+# git-prompt
+source ~/.zsh/git-prompt.sh
+
+# git-completionの読み込み
+fpath=(~/.zsh $fpath)
+zstyle ':completion:*:*:git:*' script ~/.zsh/git-completion.bash
+autoload -Uz compinit && compinit
+
+GIT_PS1_SHOWDIRTYSTATE=true
+GIT_PS1_SHOWUNTRACKEDFILES=true
+GIT_PS1_SHOWSTASHSTATE=true
+GIT_PS1_SHOWUPSTREAM=auto
+
+
+setopt PROMPT_SUBST
+PS1='$(__ts_first_prompt_line)
+$ '
+
+# node
+export PATH=$HOME/.nodebrew/current/bin:$PATH
+
+# ls
+alias ls='ls -G'
+
+# ビープ音オフ
+setopt no_beep
+
+# Created by `pipx` on 2024-11-14 06:07:47
+export PATH="$PATH:/Users/yu.nakata/.local/bin"
+
+source ~/alias_bastion.sh
+export PATH="/opt/homebrew/opt/mysql-client@8.0/bin:$PATH"
+
+# Neovim
+alias vim='nvim'
+
+# asdf
+export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
+fpath=(${ASDF_DATA_DIR:-$HOME/.asdf}/completions $fpath)
+autoload -Uz compinit && compinit
+
+# Go
+export GOPATH="$HOME/go"
+export PATH="$HOME/.asdf/shims:$PATH"
+
+# Kubernetes
+export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+
+# WebAutoCLI
+export PATH="$HOME/t4/WebAutoCLI_binary:$PATH"
+export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
+
+# history
+HISTSIZE=100000
+SAVEHIST=200000
+HISTFILE=~/.zsh_history
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_REDUCE_BLANKS
+setopt SHARE_HISTORY
+
+# gistalias completion
+eval "$(_GISTALIAS_COMPLETE=zsh_source gistalias)"
+
+# pnpm
+export PNPM_HOME="/Users/yu.nakata/Library/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm End

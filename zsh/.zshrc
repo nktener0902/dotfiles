@@ -59,8 +59,8 @@ function __ts_first_prompt_line() {
   print -r -- "%F{green}%n@%m%f: %F{cyan}%~%f %F{red}${git_raw}%f"
 }
 
-# Git status の自動更新（5秒ごと）
-TMOUT=5
+# Git status の自動更新（30秒ごと）
+TMOUT=30
 
 TRAPALRM() {
   [[ -o zle ]] || return 0

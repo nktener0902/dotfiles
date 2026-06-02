@@ -16,102 +16,55 @@ autoload -Uz add-zsh-hook
 
 typeset -g __ts_cmd_started_at=""
 typeset -g __ts_cmd_running=0
+typeset -g __ts_last_prompt_line=""
 
 __ts_preexec() {
   __ts_cmd_running=1
   __ts_cmd_started_at="$(date '+%Y-%m-%d %H:%M:%S')"
+  local time_hm="${__ts_cmd_started_at:11}"
+
+  # PS1は2行構成（info行 + "$ "行）のため、Enter後のカーソルから2行上がinfo行
+  # その行を (HH:MM:SS) 付きに上書きしてからカーソルを戻す
+  printf '\e[2A\r\e[2K'
+  print -Prn -- "${__ts_last_prompt_line} %F{yellow}(${time_hm})%f"
+  printf '\e[2B\r'
 }
 
 __ts_precmd() {
-  # reset-prompt 等の再描画では出さない
-  (( __ts_cmd_running )) || return 0
-
-  local ended_at="$(date '+%Y-%m-%d %H:%M:%S')"
-  if [[ -n "${__ts_cmd_started_at}" ]]; then
-    print -r -- "[${__ts_cmd_started_at} -> ${ended_at}]"
-  else
-    print -r -- "[${ended_at}]"
+  if (( __ts_cmd_running )); then
+    local ended_at="$(date '+%Y-%m-%d %H:%M:%S')"
+    if [[ -n "${__ts_cmd_started_at}" ]]; then
+      print -r -- "[${__ts_cmd_started_at} -> ${ended_at}]"
+    else
+      print -r -- "[${ended_at}]"
+    fi
+    __ts_cmd_running=0
+    __ts_cmd_started_at=""
   fi
 
-  __ts_cmd_running=0
-  __ts_cmd_started_at=""
+  # PS1の$(...) はサブシェルなので変数代入が親に届かない。
+  # precmd は親シェルで動くため、ここで更新する。
+  local _git_raw=$(__git_ps1 '(%s)')
+  _git_raw=${_git_raw%\%}
+  __ts_last_prompt_line="%F{green}%n@%m%f: %F{cyan}%~%f %F{red}${_git_raw}%f"
 }
 
 add-zsh-hook preexec __ts_preexec
 add-zsh-hook precmd  __ts_precmd
 
 
-# 時計（秒ごと再描画）
-typeset -g __clock_enabled=1
-
-# NOTE: multi-line prompt の場合、RPROMPT は最終行（$ の行）に付く。
-# 1行目の末尾に時刻を出したいので、RPROMPT は使わず PS1 側で右寄せする。
-RPROMPT=''
-
-TMOUT=2  # まず 2 秒に落として安定化
-
-TRAPALRM() {
-  (( __clock_enabled )) || return 0
-  [[ -o zle ]] || return 0
-
-  # 補完UI実行中は更新しない（壊れやすい）
-  case "$WIDGET" in
-    complete-word|expand-or-complete|menu-complete|menu-select|reverse-menu-complete|list-choices|complete-word*|expand-or-complete* )
-      return 0
-      ;;
-  esac
-
-  zle reset-prompt
-}
-# 1行目末尾に表示する時計（右寄せ）
-typeset -g __ts_clock_format='%F{yellow}%D{%H:%M:%S}%f'
-
 function __ts_first_prompt_line() {
-  local git_raw left_raw time_raw
-
-  # __git_ps1 の出力に含まれる % を zsh の prompt escape として解釈させない
-  git_raw=$(__git_ps1 '(%s)')
+  local git_raw=$(__git_ps1 '(%s)')
   git_raw=${git_raw%\%}
-
-  left_raw="%F{green}%n@%m%f: %F{cyan}%~%f %F{red}${git_raw}%f"
-  time_raw="$__ts_clock_format"
-
-  # 表示幅計算用に一度展開して ANSI を除去
-  local left_expanded time_expanded
-  left_expanded=$(print -P -- "$left_raw")
-  time_expanded=$(print -P -- "$time_raw")
-
-  local esc=$'\e'
-  local left_plain=${left_expanded//$esc\[[0-9\;]##m/}
-  local time_plain=${time_expanded//$esc\[[0-9\;]##m/}
-
-  local left_len=${#left_plain}
-  local time_len=${#time_plain}
-
-  local pad=$(( COLUMNS - left_len - time_len ))
-  (( pad < 1 )) && pad=1
-
-  # ここは「未展開の prompt escape」を返す（zsh が後で展開する）
-  print -r -- "${left_raw}${(l:${pad}:: :)}${time_raw}"
+  print -r -- "%F{green}%n@%m%f: %F{cyan}%~%f %F{red}${git_raw}%f"
 }
 
 # peco
 # 過去に実行したコマンドを選択。ctrl-rにバインド
 function peco-select-history() {
-  local _saved_tmout=$TMOUT
-  local _saved_clock=$__clock_enabled
-
-  __clock_enabled=0
-  TMOUT=0
-
-  {
-    BUFFER=$(\history -n -r 1 | peco --query "$LBUFFER")
-    CURSOR=$#BUFFER
-  } always {
-    TMOUT=$_saved_tmout
-    __clock_enabled=$_saved_clock
-    zle reset-prompt
-  }
+  BUFFER=$(\history -n -r 1 | peco --query "$LBUFFER")
+  CURSOR=$#BUFFER
+  zle reset-prompt
 }
 zle -N peco-select-history
 bindkey '^r' peco-select-history
@@ -138,25 +91,13 @@ function peco-get-destination-from-cdr() {
 
 ### 過去に移動したことのあるディレクトリを選択。ctrl-uにバインド
 function peco-cdr() {
-  local _saved_tmout=$TMOUT
-  local _saved_clock=$__clock_enabled
-
-  __clock_enabled=0
-  TMOUT=0
-
-  {
-    local destination="$(peco-get-destination-from-cdr)"
-    if [ -n "$destination" ]; then
-      BUFFER="cd $destination"
-      zle accept-line
-    else
-      zle reset-prompt
-    fi
-  } always {
-    TMOUT=$_saved_tmout
-    __clock_enabled=$_saved_clock
+  local destination="$(peco-get-destination-from-cdr)"
+  if [ -n "$destination" ]; then
+    BUFFER="cd $destination"
+    zle accept-line
+  else
     zle reset-prompt
-  }
+  fi
 }
 zle -N peco-cdr
 bindkey '^u' peco-cdr

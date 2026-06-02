@@ -59,12 +59,31 @@ function __ts_first_prompt_line() {
   print -r -- "%F{green}%n@%m%f: %F{cyan}%~%f %F{red}${git_raw}%f"
 }
 
+# Git status の自動更新（5秒ごと）
+TMOUT=5
+
+TRAPALRM() {
+  [[ -o zle ]] || return 0
+  case "$WIDGET" in
+    complete-word|expand-or-complete|menu-complete|menu-select|reverse-menu-complete|list-choices|complete-word*|expand-or-complete* )
+      return 0
+      ;;
+  esac
+  zle reset-prompt
+}
+
 # peco
 # 過去に実行したコマンドを選択。ctrl-rにバインド
 function peco-select-history() {
-  BUFFER=$(\history -n -r 1 | peco --query "$LBUFFER")
-  CURSOR=$#BUFFER
-  zle reset-prompt
+  local _saved_tmout=$TMOUT
+  TMOUT=0
+  {
+    BUFFER=$(\history -n -r 1 | peco --query "$LBUFFER")
+    CURSOR=$#BUFFER
+  } always {
+    TMOUT=$_saved_tmout
+    zle reset-prompt
+  }
 }
 zle -N peco-select-history
 bindkey '^r' peco-select-history
@@ -91,13 +110,20 @@ function peco-get-destination-from-cdr() {
 
 ### 過去に移動したことのあるディレクトリを選択。ctrl-uにバインド
 function peco-cdr() {
-  local destination="$(peco-get-destination-from-cdr)"
-  if [ -n "$destination" ]; then
-    BUFFER="cd $destination"
-    zle accept-line
-  else
+  local _saved_tmout=$TMOUT
+  TMOUT=0
+  {
+    local destination="$(peco-get-destination-from-cdr)"
+    if [ -n "$destination" ]; then
+      BUFFER="cd $destination"
+      zle accept-line
+    else
+      zle reset-prompt
+    fi
+  } always {
+    TMOUT=$_saved_tmout
     zle reset-prompt
-  fi
+  }
 }
 zle -N peco-cdr
 bindkey '^u' peco-cdr
